@@ -43,25 +43,29 @@ class RectangularFacet(object):
         self.sense = sense
         self.n = np.cross(self.r1, self.r2)
         self.n /= np.linalg.norm(self.n)
-        self.n *= sense
+        # self.n *= sense
 
         if not np.cross(self.r1, np.array([0, 1, 0])).any(): 
             # Already aligned to y axis, need to swap (not sure if really needed)
+
+            # These need to be verified...
             self.r1, self.r2 = self.r2, self.r1
             self._R = RotationMatrix(np.eye(3)[[1, 0, 2]])
+            self.sense *= -1
+            self.n *= -1
 
         elif not np.cross(self.r1, np.array([1, 0, 0])).any():
             self._R = RotationMatrix(np.eye(3))
 
         else:
-            # Calculate rotation matrices
             R1 = align_vectors(
-                self.r1,
-                np.array([1., 0, 0])
+                self.n,
+                np.array([0, 0, 1.0]),
             )
+
             R2 = align_vectors(
-                R1(self.r2),
-                np.array([0, 1., 0])
+                R1(self.r1),
+                np.array([1.0, 0, 0])
             )
 
             self._R = R2 << R1
@@ -85,10 +89,10 @@ class RectangularFacet(object):
     def __call__(self, P):
         #Translate P to relative frame
 
-        P0 = self._R(P - self.c)
+        P0 = self._R(P) - self.c
 
         # Not sure why negative...
-        return -self.sense * omega(
+        return self.sense * omega(
             self._x1,
             self._x2,
             self._y1,
