@@ -43,7 +43,7 @@ class RectangularFacet(object):
         self.sense = sense
         self.n = np.cross(self.r1, self.r2)
         self.n /= np.linalg.norm(self.n)
-        # self.n *= sense
+        self.n *= sense
 
         if not np.cross(self.r1, np.array([0, 1, 0])).any(): 
             # Already aligned to y axis, need to swap (not sure if really needed)
@@ -59,7 +59,7 @@ class RectangularFacet(object):
 
         else:
             R1 = align_vectors(
-                self.n,
+                self.sense * self.n,
                 np.array([0, 0, 1.0]),
             )
 
@@ -83,16 +83,17 @@ class RectangularFacet(object):
         return np.vstack((self.r1, self.r2))
 
     def is_facing(self, P):
-        if self.n.dot(P) > 0.0: return True
+        if self.n.dot(P - self.c) > 0.0: return True
         else: return False
 
     def __call__(self, P):
         #Translate P to relative frame
 
-        P0 = self._R(P) - self.c
+        #P0 = self._R(P) - self.c
+        P0 = self._R(P - self.c)
 
         # Not sure why negative...
-        return self.sense * omega(
+        return -self.sense * omega(
             self._x1,
             self._x2,
             self._y1,
