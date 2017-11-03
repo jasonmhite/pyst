@@ -9,6 +9,6 @@ setup(
     install_requires=['numpy'],
     license="2-clause BSD (FreeBSD)",
     extras_require={
-        "plots": ["matplotlib", "seaborn"],
+        "plots": ["matplotlib"],
     },
 )                     
