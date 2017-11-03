@@ -43,14 +43,14 @@ def plot_facet(F, ax=None, normal=True, normal_len=1.0, normal_kwargs={}, *args,
         ax = plt.gca()
 
     verts = np.array([[
-        F.c,
-        F.c + F.r1,
-        F.c + F.r1 + F.r2,
-        F.c + F.r2,
+        F.corner,
+        F.corner + F.r1,
+        F.corner + F.r1 + F.r2,
+        F.corner + F.r2,
     ]])
 
     ax.add_collection3d(Poly3DCollection(verts, *args, **kwargs))
 
     if normal:
-        cm = F.c + 0.5 * (F.r1 + F.r2)
+        cm = F.corner + 0.5 * (F.r1 + F.r2)
         plot_vector(cm + normal_len * F.n, x0=cm, ax=ax, **normal_kwargs)
