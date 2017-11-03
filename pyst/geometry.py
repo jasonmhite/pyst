@@ -1,5 +1,7 @@
 import numpy as np
 
+__all__ = ["RotationMatrix", "align_vectors"]
+
 class RotationMatrix(object):
 
     __inverse = None
